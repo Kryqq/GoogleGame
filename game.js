@@ -4,11 +4,13 @@ export class Game {
       columns: 4,
       rows: 3,
     },
+    googleJumpInterval: 2000,
   }
   #status = 'pending'
   #player1
   #player2
   #google
+  #googleJumpIntrevalId
 
   #getRandomPosition(takenPosition = []) {
     let newX
@@ -18,8 +20,15 @@ export class Game {
       newY = NumberUtil.getRandomNumber(this.#settings.gridSize.rows)
     } while (takenPosition.some((position) => position.x === newX && position.y === newY))
 
-    
     return new Position(newX, newY)
+  }
+
+  #moveGogleToRandomPosition(isStartPosition) {
+    const googlePosition = isStartPosition
+      ? this.#getRandomPosition([this.#player1.position, this.#player2.position])
+      : this.#getRandomPosition([this.#player1.position, this.#player2.position, this.#google.position])
+
+    this.#google = new Google(googlePosition)
   }
 
   #createUnits() {
@@ -29,8 +38,7 @@ export class Game {
     const player2Position = this.#getRandomPosition([player1Position])
     this.#player2 = new Player(2, player2Position)
 
-    const googlePosition = this.#getRandomPosition([player1Position, player2Position])
-    this.#google = new Google(googlePosition)
+    this.#moveGogleToRandomPosition(true)
   }
 
   start() {
@@ -38,6 +46,15 @@ export class Game {
       this.#status = 'in-process'
     }
     this.#createUnits()
+
+    this.#googleJumpIntrevalId = setInterval(() => {
+      this.#moveGogleToRandomPosition(false)
+    }, this.#settings.googleJumpInterval)
+  }
+
+  stop() {
+    this.#status = 'finished'
+    clearInterval(this.#googleJumpIntrevalId)
   }
 
   set settings(settings) {
@@ -83,6 +100,12 @@ class Position {
   constructor(x, y) {
     this.x = x
     this.y = y
+  }
+  copy() {
+    return new Position(this.x, this.y)
+  }
+  equal(position) {
+    return position.x === this.x && position.y === this.y
   }
 }
 
