@@ -5,12 +5,17 @@ export class Game {
       rows: 3,
     },
     googleJumpInterval: 2000,
+    pointsToWin: 10,
   }
   #status = 'pending'
   #player1
   #player2
   #google
   #googleJumpIntrevalId
+  #score = {
+    1: { points: 0 },
+    2: { points: 0 },
+  }
 
   #getRandomPosition(takenPosition = []) {
     let newX
@@ -57,6 +62,89 @@ export class Game {
     clearInterval(this.#googleJumpIntrevalId)
   }
 
+  #isBorder(movingPlayer, step) {
+    let prevPlayer1Position = movingPlayer.position.copy()
+    if (step.x) {
+      prevPlayer1Position += step.x
+      return prevPlayer1Position.x < 1 || prevPlayer1Position.x > this.#settings.gridSize.columns
+    }
+    if (step.y) {
+      prevPlayer1Position += step.y
+      return prevPlayer1Position.y < 1 || prevPlayer1Position.y > this.#settings.gridSize.rows
+    }
+  }
+  #isOtherPlayer(movingPlayer, otherPlayer, step) {
+    let prevPlayer1Position = movingPlayer.position.copy()
+    if (step.x) {
+      prevPlayer1Position.x += step.x
+    }
+    if (step.y) {
+      prevPlayer1Position.y += step.y
+    }
+
+    return prevPlayer1Position.equal(otherPlayer.position)
+  }
+  #checkGoogleCatching(movingPlayer) {
+    if (movingPlayer.position.equal(this.#google.position)) {
+      this.#score[movingPlayer.id].points++
+    }
+    if (this.#score[movingPlayer.id].points === this.#settings.pointsToWin) {
+      this.stop()
+      this.#google = new Google(0, 0)
+    }
+    this.#moveGogleToRandomPosition(false)
+  }
+
+  #movePlayer(movingPlayer, otherPlayer, step) {
+    const isBorder = this.#isBorder(movingPlayer, step)
+
+    const isOtherPlayer = this.#isOtherPlayer(movingPlayer, otherPlayer, step)
+
+    if (isBorder || isOtherPlayer) return
+
+    if (step.x) {
+      movingPlayer.position.x += step.x
+    }
+    if (step.y) {
+      movingPlayer.position.y += step.y
+    }
+
+    this.#checkGoogleCatching(movingPlayer)
+  }
+
+  movePlayer1Right() {
+    const step = { x: 1 }
+    this.#movePlayer(this.#player1, this.#player2, step)
+  }
+  movePlayer1Left() {
+    const step = { x: -1 }
+    this.#movePlayer(this.#player1, this.#player2, step)
+  }
+  movePlayer1Up() {
+    const step = { y: -1 }
+    this.#movePlayer(this.#player1, this.#player2, step)
+  }
+  movePlayer1Down() {
+    const step = { y: 1 }
+    this.#movePlayer(this.#player1, this.#player2, step)
+  }
+  movePlayer2Right() {
+    const step = { x: 1 }
+    this.#movePlayer(this.#player2, this.#player1, step)
+  }
+  movePlayer2Left() {
+    const step = { x: -1 }
+    this.#movePlayer(this.#player2, this.#player1, step)
+  }
+  movePlayer2Up() {
+    const step = { y: -1 }
+    this.#movePlayer(this.#player2, this.#player1, step)
+  }
+  movePlayer2Down() {
+    const step = { y: 1 }
+    this.#movePlayer(this.#player2, this.#player1, step)
+  }
+
   set settings(settings) {
     this.#settings = settings
   }
@@ -74,6 +162,9 @@ export class Game {
   }
   get google() {
     return this.#google
+  }
+  get score() {
+    return this.#score
   }
 }
 
