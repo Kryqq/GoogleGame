@@ -17,27 +17,66 @@
         row-gap: 15%;
         padding-top: 10%;
       }
+      div.scoreBlock {
+        height: 80px;
+        width: 80%;
+        /* display: flex;
+        align-items: center;
+        justify-content: center; */
+        padding: 15px;
+        column-gap: 40px;
+        font-size: 20px;
+        color: #fff;
+        border: 1px solid #4c5e50;
+        background-color: #393d3766;
+        border-radius: 50px;
+      }
 
-	 td {
-		width: 75px;
-		height: 75px;
-		margin: 3px 4px;
-		border: 2px solid #999b95;
-		background-color: #6E75774D;
-		border-radius: 8px;
-		display: inline-flex;
-		justify-content: center;
-		align-items: center;
-		
+      .scorePlayer, .scoreBlock {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        column-gap: 10px;
+      }
+	 .scorePlayer img{
+		width: 40px;
+		height: 40px;
 	 }
+
+      td {
+        width: 75px;
+        height: 75px;
+        margin: 3px 4px;
+        border: 2px solid #999b95;
+        background-color: #6e75774d;
+        border-radius: 8px;
+        display: inline-flex;
+        justify-content: center;
+        align-items: center;
+      }
+      img {
+        width: 55px;
+        height: 55px;
+      }
     </style>
   </head>
   <body>
-    <div>game</div>
-    <table>
+    <div class="scoreBlock">
+      <div class="scorePlayer">
+        <img src="#" alt="player img" />
+        <span>Player 1: <span id="score1"> 0 </span> </span>
+      </div>
+      <div class="scorePlayer">
+        <img src="#" alt="player2 img" />
+        <span>Player 2: <span id="score2"> 0 </span> </span>
+      </div>
+    </div>
+    <table id="grid">
       <tr>
-        <td></td>
-        <td></td>
+        <td>
+          <img src="#" alt="player img" />
+        </td>
+        <td><img src="#" alt="player2 img" /></td>
         <td></td>
       </tr>
       <tr>
@@ -46,7 +85,7 @@
         <td></td>
       </tr>
       <tr>
-        <td></td>
+        <td><img src="#" alt="google img" /></td>
         <td></td>
         <td></td>
       </tr>
