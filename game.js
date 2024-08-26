@@ -4,7 +4,7 @@ export class Game {
       columns: 4,
       rows: 3,
     },
-    googleJumpInterval: 2000,
+    googleJumpInterval: 1000000,
     pointsToWin: 10,
   }
   #status = 'pending'
@@ -15,6 +15,9 @@ export class Game {
   #score = {
     1: { points: 0 },
     2: { points: 0 },
+  }
+  constructor(eventEmitter) {
+    this.eventEmitter = eventEmitter
   }
 
   #getRandomPosition(takenPosition = []) {
@@ -34,6 +37,7 @@ export class Game {
       : this.#getRandomPosition([this.#player1.position, this.#player2.position, this.#google.position])
 
     this.#google = new Google(googlePosition)
+    this.eventEmitter.emit('changePosition')
   }
 
   #createUnits() {
@@ -54,7 +58,7 @@ export class Game {
 
     this.#googleJumpIntrevalId = setInterval(() => {
       this.#moveGogleToRandomPosition(false)
-    }, this.#settings.googleJumpInterval)
+    }, 5000)
   }
 
   stop() {
